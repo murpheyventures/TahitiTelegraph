@@ -43,13 +43,18 @@ export function HazardRibbon({
 
         {alerts.map((a) => {
           const island = a.island ? getIsland(a.island)?.name ?? a.island : "Territory";
-          const color = VIG_COLOR[a.vigilanceLevel ?? "green"] ?? "var(--color-faint)";
+          const known = a.vigilanceLevel ? VIG_COLOR[a.vigilanceLevel] : undefined;
+          const color = known ?? "var(--color-faint)";
           return (
             <span key={a.id} className="inline-flex items-center gap-2">
               <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
               <span className="text-muted">
                 {island}: <span className="text-fg">{a.hazardType}</span>{" "}
-                <span style={{ color }}>{a.vigilanceLevel}</span>
+                {known ? (
+                  <span style={{ color }}>{a.vigilanceLevel}</span>
+                ) : (
+                  <span className="text-faint">see official</span>
+                )}
               </span>
               {a.url ? (
                 <a href={a.url} target="_blank" rel="noopener noreferrer" className="text-faint hover:text-primary">

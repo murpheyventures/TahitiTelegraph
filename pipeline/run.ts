@@ -24,7 +24,11 @@ async function main() {
 
   console.log(`\nTahitiTelegraph ingest — ${dryRun ? "DRY RUN (no writes)" : "live"}${only ? ` — source=${only}` : ""}\n`);
 
-  const feeds = only ? RSS_FEEDS.filter((f) => f.id === only) : RSS_FEEDS;
+  const feeds = hasFlag("no-rss")
+    ? []
+    : only
+      ? RSS_FEEDS.filter((f) => f.id === only)
+      : RSS_FEEDS;
   const results: CollectResult[] = [];
 
   for (const f of feeds) {
@@ -34,12 +38,15 @@ async function main() {
     console.log(r.error ? `ERROR: ${r.error}` : `seen ${r.seen}, ${dryRun ? "would add" : "added"} ${r.added}`);
   }
 
-  // Phase-1 stubs (no-op today) — only when not filtering to a single RSS source.
+  // Non-RSS collectors — only when not filtering to a single RSS source.
   if (!only) {
     const m = await collectMeteo({ dryRun });
-    console.log(`  ${m.source} … ${m.note ?? `added ${m.added}`}`);
-    const a = await collectAdvisories({ dryRun });
-    console.log(`  ${a.source} … ${a.note ?? `added ${a.added}`}`);
+    console.log(`  ${m.source} … ${m.error ? `ERROR: ${m.error}` : m.note}`);
+    for (const adv of await collectAdvisories({ dryRun })) {
+      console.log(
+        `  ${adv.source} … ${adv.error ? `ERROR: ${adv.error}` : `${adv.level}${adv.changed ? " (changed)" : ""}`}`
+      );
+    }
   }
 
   const okFeeds = results.filter((r) => !r.error).length;
