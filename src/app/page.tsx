@@ -26,7 +26,7 @@ export default async function Home() {
       <SiteHeader
         kicker="French Polynesia Intelligence"
         title="What's moving across the fenua"
-        summary="A clear, human read on what's really changing across our islands: what happened, why it matters, and what to watch next. Every insight carries its sources, never just another feed."
+        summary="A friendly place to catch up on what’s happening across our islands. The stories people are talking about, the changes worth knowing, and the little things that help you feel connected to life in French Polynesia."
         asOf={asOf}
       />
       <main className="mx-auto w-full max-w-6xl px-5 pb-14">
