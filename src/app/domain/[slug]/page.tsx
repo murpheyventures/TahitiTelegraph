@@ -23,7 +23,7 @@ export default async function DomainPage({
   return (
     <>
       <SiteHeader
-        kicker="Domain"
+        kicker={domain.section === "tourism" ? "Tourism" : "Local News"}
         title={domain.labelEn}
         summary={domain.blurb}
         asOf={asOf}

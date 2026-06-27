@@ -70,6 +70,19 @@ const SOURCES: (typeof schema.sources.$inferInsert)[] = [
   { id: "smartraveller", name: "Smartraveller (AU)", url: "https://www.smartraveller.gov.au/destinations/pacific/french-polynesia", sourceType: "advisory", ingestionMethod: "crawl", language: "en", cadence: "event", licenceNote: "Australian Govt; likely CC BY." },
   { id: "travel-gc-ca", name: "Travel Advice (Canada)", url: "https://travel.gc.ca/destinations/french-polynesia", sourceType: "advisory", ingestionMethod: "rss", language: "en", cadence: "event", licenceNote: "Open Government Licence – Canada." },
   { id: "spc-pdh", name: "SPC Pacific Data Hub (PDH.stat)", url: "https://stats.pacificdata.org", sourceType: "regional", ingestionMethod: "api", language: "en", cadence: "monthly", active: false, licenceNote: "SDMX API; open. Phase 2." },
+
+  // ── Tourism layer (per tourism_source_feasibility_audit.md) ──
+  { id: "hospitalitynet", name: "HospitalityNet", url: "https://www.hospitalitynet.org/rss", sourceType: "trade_press", ingestionMethod: "rss", language: "en", cadence: "daily", licenceNote: "RSS + API; FP-filtered; republished PRs. review_required if public." },
+  { id: "travelpulse", name: "TravelPulse", url: "https://www.travelpulse.com", sourceType: "trade_press", ingestionMethod: "rss", language: "en", cadence: "daily", licenceNote: "Free; cruise/destinations RSS; FP-filtered. review_required if public." },
+  { id: "cruisemapper-fp", name: "CruiseMapper (FP ports)", url: "https://www.cruisemapper.com/ports/papeete-port-109", sourceType: "cruise", ingestionMethod: "crawl", language: "en", cadence: "weekly", licenceNote: "robots allows /ports; proprietary aggregated schedule. review_required if public." },
+  { id: "adt-airport", name: "Aéroport de Tahiti-Faa'a (ADT)", url: "https://tahiti-aeroports.com", sourceType: "airport", ingestionMethod: "crawl", language: "fr", cadence: "monthly", licenceNote: "Monthly passenger traffic in press releases (demand proxy)." },
+  { id: "tahiti-tourisme-corp", name: "Tahiti Tourisme (corporate)", url: "https://tahititourisme.org/en-org/", sourceType: "tourism", ingestionMethod: "crawl", language: "en", cadence: "weekly", active: false, licenceNote: "Official DMO press + FM27; sitemap crawl (RSS disallowed). Phase 2." },
+  { id: "ispf-tourism", name: "ISPF tourism datasets", url: "https://data.ispf.pf/", sourceType: "tourism", ingestionMethod: "data_file", language: "fr", cadence: "monthly", active: false, licenceNote: "Open licence; arrivals/cruise/source markets. Best-effort; verify endpoints." },
+  { id: "fm27", name: "Fāri'ira'a Manihini 2027 (FM27)", url: "https://fm27.pf/en/", sourceType: "tourism", ingestionMethod: "crawl", language: "en", cadence: "monthly", active: false, licenceNote: "Sustainable-tourism strategy + updates. Phase 2." },
+  { id: "air-tahiti-nui-corp", name: "Air Tahiti Nui (corporate)", url: "https://us.airtahitinui.com/news", sourceType: "airline", ingestionMethod: "crawl", language: "en", cadence: "weekly", active: false, licenceNote: "Intl routes/capacity + annual reports. Phase 2." },
+  { id: "air-tahiti-corp", name: "Air Tahiti", url: "https://www.airtahiti.com/actualites", sourceType: "airline", ingestionMethod: "crawl", language: "fr", cadence: "weekly", active: false, licenceNote: "Domestic routes; heavy local-news overlap. Phase 2." },
+  { id: "air-moana", name: "Air Moana", url: "https://www.airmoana.com", sourceType: "airline", ingestionMethod: "crawl", language: "fr", cadence: "weekly", active: false, licenceNote: "Domestic routes. Phase 2." },
+  { id: "port-de-papeete-cruise", name: "Port autonome de Papeete (cruise)", url: "https://www.portdepapeete.pf", sourceType: "airport", ingestionMethod: "crawl", language: "fr", cadence: "monthly", active: false, licenceNote: "Official cruise calls / Te Anuanua terminal. Phase 2." },
 ];
 
 async function seedSources() {
@@ -105,7 +118,7 @@ async function seedExamplePulses() {
     {
       type: "island_pulse",
       island: "territory",
-      domain: "tourism-access",
+      domain: "visitor-demand",
       period,
       headline: "Tourism set a record in 2024, but the growth is increasingly cruise-led",
       take: "French Polynesia welcomed more visitors than ever in 2024, yet the marginal growth came from cruise passengers rather than higher-spending land stays, a quieter shift in the shape of the tourism economy.",

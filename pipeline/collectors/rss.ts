@@ -13,7 +13,14 @@ import { resolveIslands } from "../lib/geo";
 export interface RssSource {
   id: string; // must match a row in `sources`
   feedUrl: string;
+  /** Optional keep-predicate over "title body url"; used to FP-filter wide feeds. */
+  filter?: (haystack: string) => boolean;
 }
+
+// Keep only French Polynesia-relevant items from broad international feeds.
+const FP_RE =
+  /\b(bora ?bora|moorea|tahiti|polynesia|polyn[eé]sie|raiatea|taha'?a|huahine|maupiti|fakarava|rangiroa|tikehau|manihi|marquesas|marquises|nuku ?hiva|hiva ?oa|papeete|tuamotu|austral|gambier|fenua|pacific beachcomber|the brando|aranui|paul gauguin|air tahiti|air moana)\b/i;
+const fpFilter = (s: string) => FP_RE.test(s);
 
 // Feed URLs confirmed by probe on 2026-06-27 (see pipeline notes):
 //   ✅ tahiti-infos  https://www.tahiti-infos.com/xml/syndication.rss  (text/xml)
@@ -24,6 +31,10 @@ export interface RssSource {
 export const RSS_FEEDS: RssSource[] = [
   { id: "tahiti-infos", feedUrl: "https://www.tahiti-infos.com/xml/syndication.rss" },
   { id: "tahitinews-co", feedUrl: "https://www.tahitinews.co/feed/" },
+  // Tourism trade feeds — broad, so FP-filtered.
+  //  ✅ HospitalityNet news.xml (verified). Openings also at /rss/announcements/openings.xml.
+  //  ❌ TravelPulse has no native RSS (/rss → 403); needs an HTML crawl (Phase 2).
+  { id: "hospitalitynet", feedUrl: "https://www.hospitalitynet.org/rss/news.xml", filter: fpFilter },
 ];
 
 const parser = new Parser({
@@ -72,6 +83,10 @@ export async function collectRss(
       const hash = contentHash(it.guid ?? url, title);
       const body = (it as { content?: string })["content"] ?? it.contentSnippet ?? null;
       const publishedAt = it.isoDate ? new Date(it.isoDate) : null;
+
+      // FP filter for broad feeds (HospitalityNet/TravelPulse).
+      if (src.filter && !src.filter(`${title} ${body ?? ""} ${url}`)) continue;
+
       const islands = resolveIslands(title, it.contentSnippet ?? body);
 
       if (opts.dryRun) {

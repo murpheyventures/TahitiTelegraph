@@ -1,10 +1,15 @@
 import Link from "next/link";
-import { DOMAINS } from "@/lib/taxonomy";
+import { DOMAINS, domainSection, type Section } from "@/lib/taxonomy";
 
-export function DomainChips({ active }: { active?: string }) {
+/** Category chips for a deep-link category page. Renders only the chips for the
+ *  given section (derived from the active slug when not passed). */
+export function DomainChips({ active, section }: { active?: string; section?: Section }) {
+  const sec: Section = section ?? (active ? domainSection(active) : "local");
+  const list = DOMAINS.filter((d) => d.section === sec);
+
   return (
     <div className="flex flex-wrap gap-2">
-      {DOMAINS.map((d) => {
+      {list.map((d) => {
         const isActive = d.slug === active;
         return (
           <Link

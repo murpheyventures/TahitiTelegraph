@@ -1,6 +1,9 @@
-// TahitiTelegraph topic taxonomy: 8 top-level domains, each with sub-tags.
+// TahitiTelegraph topic taxonomy.
+// Two SECTIONS: "tourism" (the main focus) and "local" (general news).
 // Canonical source of truth — the DB `topics` table is seeded from this, the
-// pipeline tags items against it, and the UI colour-codes by domain.
+// pipeline tags items against it, and the UI colour-codes + tabs by section.
+
+export type Section = "tourism" | "local";
 
 export interface Subtag {
   slug: string;
@@ -10,35 +13,160 @@ export interface Subtag {
 
 export interface Domain {
   slug: string;
+  section: Section;
   labelEn: string;
   labelFr: string;
   /** Short reo Tahiti / accent label, optional. */
   labelTy?: string;
-  color: string; // hex, used for domain colour-coding
+  color: string; // hex, used for colour-coding
   blurb: string;
   subtags: Subtag[];
 }
 
 export const DOMAINS: Domain[] = [
+  // ───────────────────────── TOURISM (main focus) ─────────────────────────
   {
-    slug: "tourism-access",
-    labelEn: "Tourism & Access",
-    labelFr: "Tourisme & accès",
-    color: "#2BB6C4", // lagoon turquoise
-    blurb: "Visitors, hotels, air and sea access, getting between the islands.",
+    slug: "visitor-demand",
+    section: "tourism",
+    labelEn: "Visitor Demand & Data",
+    labelFr: "Fréquentation & données",
+    color: "#2bb6c4",
+    blurb: "Arrivals, source markets, length of stay, cruise vs land, occupancy.",
     subtags: [
-      { slug: "tourism", labelEn: "Tourism", labelFr: "Tourisme" },
-      { slug: "hotels-resorts", labelEn: "Hotels & resorts", labelFr: "Hôtellerie" },
-      { slug: "flights-air-access", labelEn: "Flights & air access", labelFr: "Transport aérien" },
-      { slug: "cruises", labelEn: "Cruises", labelFr: "Croisière" },
-      { slug: "inter-island-transport", labelEn: "Inter-island transport", labelFr: "Transport inter-îles" },
+      { slug: "visitor-arrivals", labelEn: "Visitor arrivals", labelFr: "Arrivées de touristes" },
+      { slug: "source-markets", labelEn: "Source markets", labelFr: "Marchés émetteurs" },
+      { slug: "length-of-stay", labelEn: "Length of stay", labelFr: "Durée de séjour" },
+      { slug: "occupancy", labelEn: "Occupancy & lodging", labelFr: "Hébergement & occupation" },
     ],
   },
   {
+    slug: "hotels-resorts",
+    section: "tourism",
+    labelEn: "Hotels & Resorts",
+    labelFr: "Hôtellerie",
+    color: "#e8552b",
+    blurb: "Openings, renovations, reopenings, rebrands, ownership, the pipeline.",
+    subtags: [
+      { slug: "hotel-openings", labelEn: "Openings", labelFr: "Ouvertures" },
+      { slug: "renovations-reopenings", labelEn: "Renovations & reopenings", labelFr: "Rénovations & réouvertures" },
+      { slug: "rebrands-ownership", labelEn: "Rebrands & ownership", labelFr: "Changement d'enseigne / propriété" },
+      { slug: "hotel-pipeline", labelEn: "Hotel pipeline", labelFr: "Projets hôteliers" },
+      { slug: "luxury-resorts", labelEn: "Luxury resorts", labelFr: "Resorts de luxe" },
+    ],
+  },
+  {
+    slug: "cruise",
+    section: "tourism",
+    labelEn: "Cruise",
+    labelFr: "Croisière",
+    color: "#0e7c7b",
+    blurb: "Deployment, itineraries, port calls, terminals, restrictions.",
+    subtags: [
+      { slug: "cruise-deployment", labelEn: "Deployment & itineraries", labelFr: "Déploiement & itinéraires" },
+      { slug: "port-calls", labelEn: "Port calls", labelFr: "Escales" },
+      { slug: "cruise-restrictions", labelEn: "Cruise restrictions", labelFr: "Restrictions croisière" },
+      { slug: "cruise-terminal", labelEn: "Cruise terminal", labelFr: "Terminal croisière" },
+    ],
+  },
+  {
+    slug: "air-access",
+    section: "tourism",
+    labelEn: "Air Access",
+    labelFr: "Accès aérien",
+    color: "#4f9ed9",
+    blurb: "International routes, seat capacity, airport traffic, codeshares.",
+    subtags: [
+      { slug: "international-routes", labelEn: "International routes", labelFr: "Lignes internationales" },
+      { slug: "airport-traffic", labelEn: "Airport traffic", labelFr: "Trafic aéroport" },
+      { slug: "seat-capacity", labelEn: "Seat capacity", labelFr: "Capacité en sièges" },
+      { slug: "codeshares", labelEn: "Codeshares & partnerships", labelFr: "Codeshares & partenariats" },
+    ],
+  },
+  {
+    slug: "inter-island",
+    section: "tourism",
+    labelEn: "Inter-island Transport",
+    labelFr: "Transport inter-îles",
+    color: "#6cae75",
+    blurb: "Domestic air routes and inter-island ferries and schooners.",
+    subtags: [
+      { slug: "domestic-routes", labelEn: "Domestic routes", labelFr: "Lignes intérieures" },
+      { slug: "ferries-schooners", labelEn: "Ferries & schooners", labelFr: "Ferries & goélettes" },
+    ],
+  },
+  {
+    slug: "sustainability-policy",
+    section: "tourism",
+    labelEn: "Sustainability & Policy",
+    labelFr: "Durabilité & politique",
+    color: "#2e9e6b",
+    blurb: "FM27, visitor caps, destination management, tourism regulation.",
+    subtags: [
+      { slug: "sustainable-tourism", labelEn: "Sustainable tourism", labelFr: "Tourisme durable" },
+      { slug: "visitor-caps", labelEn: "Visitor caps", labelFr: "Plafonds de fréquentation" },
+      { slug: "destination-management", labelEn: "Destination management", labelFr: "Gestion de la destination" },
+      { slug: "tourism-regulation", labelEn: "Tourism regulation", labelFr: "Réglementation touristique" },
+    ],
+  },
+  {
+    slug: "travel-trade",
+    section: "tourism",
+    labelEn: "Travel Trade",
+    labelFr: "Trade & distribution",
+    color: "#c98a1e",
+    blurb: "What advisors are selling, packaging trends, availability, sentiment.",
+    subtags: [
+      { slug: "advisor-sentiment", labelEn: "Advisor sentiment", labelFr: "Sentiment des agents" },
+      { slug: "packaging-trends", labelEn: "Packaging trends", labelFr: "Tendances forfaits" },
+      { slug: "availability", labelEn: "Availability", labelFr: "Disponibilité" },
+    ],
+  },
+  {
+    slug: "dmc-operators",
+    section: "tourism",
+    labelEn: "DMC & Operators",
+    labelFr: "Réceptifs & opérateurs",
+    color: "#9a6fb0",
+    blurb: "Local DMC and operator updates, products, and packages.",
+    subtags: [
+      { slug: "operator-updates", labelEn: "Operator updates", labelFr: "Actus opérateurs" },
+      { slug: "product-packages", labelEn: "Products & packages", labelFr: "Produits & forfaits" },
+    ],
+  },
+  {
+    slug: "marine-experiential",
+    section: "tourism",
+    labelEn: "Marine & Experiential",
+    labelFr: "Tourisme marin & expériences",
+    color: "#2f8fb3",
+    blurb: "Diving, snorkeling, whale watching, lagoon and nautical experiences.",
+    subtags: [
+      { slug: "diving-snorkeling", labelEn: "Diving & snorkeling", labelFr: "Plongée & snorkeling" },
+      { slug: "whale-watching", labelEn: "Whale watching", labelFr: "Observation des baleines" },
+      { slug: "lagoon-activities", labelEn: "Lagoon activities", labelFr: "Activités lagon" },
+    ],
+  },
+  {
+    slug: "events-festivals",
+    section: "tourism",
+    labelEn: "Events & Festivals",
+    labelFr: "Événements & festivals",
+    color: "#d4567f",
+    blurb: "Heiva, Hawaiki Nui Va'a, and cultural events that draw visitors.",
+    subtags: [
+      { slug: "heiva", labelEn: "Heiva", labelFr: "Heiva" },
+      { slug: "vaa-events", labelEn: "Va'a events", labelFr: "Événements va'a" },
+      { slug: "cultural-festivals", labelEn: "Cultural festivals", labelFr: "Festivals culturels" },
+    ],
+  },
+
+  // ───────────────────────── LOCAL NEWS (general) ─────────────────────────
+  {
     slug: "economy",
+    section: "local",
     labelEn: "Economy & Cost of Living",
     labelFr: "Économie & coût de la vie",
-    color: "#1F8A55", // breadfruit green
+    color: "#1F8A55",
     blurb: "Prices, jobs, the primary sector, and the broader economy.",
     subtags: [
       { slug: "business-economy", labelEn: "Business & economy", labelFr: "Économie" },
@@ -50,9 +178,10 @@ export const DOMAINS: Domain[] = [
   },
   {
     slug: "governance",
+    section: "local",
     labelEn: "Governance & Politics",
     labelFr: "Gouvernance & politique",
-    color: "#7B2D3A", // oxblood
+    color: "#7B2D3A",
     blurb: "Government, elections, sovereignty, and the nuclear-testing legacy.",
     subtags: [
       { slug: "government-policy", labelEn: "Government & policy", labelFr: "Gouvernement / politiques" },
@@ -63,9 +192,10 @@ export const DOMAINS: Domain[] = [
   },
   {
     slug: "infrastructure",
+    section: "local",
     labelEn: "Infrastructure & Development",
     labelFr: "Infrastructures & aménagement",
-    color: "#B07514", // tamanu amber
+    color: "#B07514",
     blurb: "Public works, housing and land, energy, and connectivity.",
     subtags: [
       { slug: "public-works", labelEn: "Public works & infrastructure", labelFr: "Travaux publics / infrastructures" },
@@ -77,9 +207,10 @@ export const DOMAINS: Domain[] = [
   },
   {
     slug: "environment-ocean",
+    section: "local",
     labelEn: "Environment & Ocean",
     labelFr: "Environnement & océan",
-    color: "#0E7C7B", // deep teal
+    color: "#0E7C7B",
     blurb: "Environment, marine resources, fisheries, and pearl farming.",
     subtags: [
       { slug: "environment", labelEn: "Environment", labelFr: "Environnement" },
@@ -90,9 +221,10 @@ export const DOMAINS: Domain[] = [
   },
   {
     slug: "weather-hazards",
+    section: "local",
     labelEn: "Climate, Weather & Hazards",
     labelFr: "Climat, météo & risques",
-    color: "#C2410C", // warning ember
+    color: "#C2410C",
     blurb: "Forecasts, cyclones and natural hazards, and travel advisories.",
     subtags: [
       { slug: "climate-weather", labelEn: "Climate & weather", labelFr: "Climat / météo" },
@@ -102,9 +234,10 @@ export const DOMAINS: Domain[] = [
   },
   {
     slug: "safety-society",
+    section: "local",
     labelEn: "Safety, Health & Society",
     labelFr: "Sécurité, santé & société",
-    color: "#7C5295", // plum
+    color: "#7C5295",
     blurb: "Public safety, drug trafficking, health, and social movements.",
     subtags: [
       { slug: "public-safety", labelEn: "Public safety", labelFr: "Sécurité publique" },
@@ -115,9 +248,10 @@ export const DOMAINS: Domain[] = [
   },
   {
     slug: "culture-regional",
+    section: "local",
     labelEn: "Culture & Regional Pacific",
     labelFr: "Culture & Pacifique régional",
-    color: "#E8552B", // hibiscus coral
+    color: "#E8552B",
     blurb: "Culture and events, sport, and the wider Pacific.",
     subtags: [
       { slug: "culture-events", labelEn: "Culture & events", labelFr: "Culture / événements" },
@@ -126,6 +260,9 @@ export const DOMAINS: Domain[] = [
     ],
   },
 ];
+
+export const TOURISM_CATEGORIES: Domain[] = DOMAINS.filter((d) => d.section === "tourism");
+export const LOCAL_DOMAINS: Domain[] = DOMAINS.filter((d) => d.section === "local");
 
 export const DOMAIN_BY_SLUG: Record<string, Domain> = Object.fromEntries(
   DOMAINS.map((d) => [d.slug, d])
@@ -141,6 +278,12 @@ export function getDomain(slug: string): Domain | undefined {
 
 export function domainForSubtag(subtagSlug: string): Domain | undefined {
   return SUBTAG_TO_DOMAIN[subtagSlug];
+}
+
+/** Section ("tourism" | "local") for a domain or sub-tag slug; defaults to "local". */
+export function domainSection(slug: string | null | undefined): Section {
+  if (!slug) return "local";
+  return (DOMAIN_BY_SLUG[slug]?.section ?? SUBTAG_TO_DOMAIN[slug]?.section ?? "local");
 }
 
 /** Resolve a colour for any domain or sub-tag slug; falls back to neutral. */

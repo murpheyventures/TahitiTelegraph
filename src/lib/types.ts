@@ -64,6 +64,14 @@ export interface OfficialNoticeView {
   sourceId?: string | null;
 }
 
+export interface CruiseCallView {
+  id: string;
+  port?: string | null;
+  shipName?: string | null;
+  cruiseLine?: string | null;
+  arrive?: string | null;
+}
+
 export interface SourceHealth {
   id: string;
   name: string;

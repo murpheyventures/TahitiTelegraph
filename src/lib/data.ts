@@ -8,6 +8,7 @@ import { tidy, tidyMaybe } from "./text";
 import type {
   AdvisoryView,
   Citation,
+  CruiseCallView,
   OfficialNoticeView,
   PulseCard,
   SourceHealth,
@@ -112,6 +113,22 @@ export async function getAdvisories(): Promise<AdvisoryView[]> {
     updatedAt: iso(r.updatedAt),
     summary: tidyMaybe(r.summary),
     url: r.url,
+  }));
+}
+
+/** Upcoming cruise port calls (scheduled), soonest first. */
+export async function getUpcomingCruiseCalls(limit = 12): Promise<CruiseCallView[]> {
+  const rows = await db
+    .select()
+    .from(schema.cruisePortCalls)
+    .orderBy(sql`${schema.cruisePortCalls.arrive} asc nulls last`)
+    .limit(limit);
+  return rows.map((r) => ({
+    id: r.id,
+    port: r.port,
+    shipName: tidyMaybe(r.shipName),
+    cruiseLine: tidyMaybe(r.cruiseLine),
+    arrive: iso(r.arrive),
   }));
 }
 

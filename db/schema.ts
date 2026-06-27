@@ -156,6 +156,21 @@ export const travelAdvisories = pgTable("travel_advisories", {
   retrievedAt: timestamp("retrieved_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+export const cruisePortCalls = pgTable("cruise_port_calls", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  sourceId: text("source_id").references(() => sources.id),
+  port: text("port"), // island/port slug (papeete, bora-bora, moorea, raiatea)
+  shipName: text("ship_name"),
+  cruiseLine: text("cruise_line"),
+  arrive: timestamp("arrive", { withTimezone: true }),
+  depart: timestamp("depart", { withTimezone: true }),
+  itinerary: text("itinerary"),
+  passengers: integer("passengers"),
+  isForward: boolean("is_forward").notNull().default(true), // scheduled vs occurred
+  contentHash: text("content_hash"),
+  retrievedAt: timestamp("retrieved_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 /* ------------------------------------------------------------------- analysis */
 
 export const analysisOutputs = pgTable("analysis_outputs", {

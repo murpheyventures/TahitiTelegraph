@@ -8,6 +8,13 @@
       "when": 1782527795953,
       "tag": "0000_crazy_maestro",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1782580726642,
+      "tag": "0001_lucky_kate_bishop",
+      "breakpoints": true
     }
   ]
 }
