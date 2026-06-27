@@ -1,0 +1,42 @@
+{
+  "name": "tahititelegraph",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:seed": "tsx db/seed/index.ts",
+    "ingest": "tsx pipeline/run.ts",
+    "analyze": "tsx pipeline/analyze/run.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.69.0",
+    "cheerio": "^1.0.0",
+    "drizzle-orm": "^0.44.7",
+    "fast-xml-parser": "^4.5.0",
+    "next": "16.2.9",
+    "postgres": "^3.4.5",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "rss-parser": "^3.13.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "dotenv": "^16.4.7",
+    "drizzle-kit": "^0.31.5",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.9",
+    "tailwindcss": "^4",
+    "tsx": "^4.19.2",
+    "typescript": "^5"
+  }
+}

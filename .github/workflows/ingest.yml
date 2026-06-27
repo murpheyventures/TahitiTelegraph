@@ -1,0 +1,32 @@
+name: ingest-and-analyze
+
+# Scheduled pipeline: pull sources, then synthesize pulses. Heavy work lives
+# here (not in the Vercel app). Adjust cron as needed; tighten during cyclone
+# season. Times are UTC.
+on:
+  schedule:
+    - cron: "0 */6 * * *" # every 6 hours
+  workflow_dispatch: {} # manual trigger
+
+concurrency:
+  group: ingest
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+      - name: Ingest sources
+        run: npm run ingest
+      - name: Tag + synthesize pulses
+        run: npm run analyze
