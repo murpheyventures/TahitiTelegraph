@@ -26,7 +26,7 @@ export default async function Home() {
       <SiteHeader
         kicker="French Polynesia Intelligence"
         title="What's moving across the fenua"
-        summary="Material changes across the islands — what happened, and why it matters. Analysis with sources, not a news feed."
+        summary="A clear, human read on what's really changing across our islands: what happened, why it matters, and what to watch next. Every insight carries its sources, never just another feed."
         asOf={asOf}
       />
       <main className="mx-auto w-full max-w-6xl px-5 pb-14">
@@ -50,7 +50,7 @@ export default async function Home() {
 
         <section className="border-t border-border py-8">
           <h2 className="mb-5 font-serif text-2xl font-medium tracking-tight text-fg">
-            Latest pulses
+            Latest from the islands
           </h2>
           {pulses.length ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

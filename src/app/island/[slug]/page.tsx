@@ -25,7 +25,7 @@ export default async function IslandPage({
       <SiteHeader
         kicker="Island pulse"
         title={island.nameTy && island.nameTy !== island.name ? `${island.name} · ${island.nameTy}` : island.name}
-        summary={`What materially changed for ${island.name}, and why it matters.`}
+        summary={`What's been moving on ${island.name}, and why it matters.`}
         asOf={asOf}
       />
       <main className="mx-auto w-full max-w-6xl px-5 pb-14">

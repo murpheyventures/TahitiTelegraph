@@ -12,9 +12,9 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
-  title: "TahitiTelegraph — French Polynesia Intelligence",
+  title: "TahitiTelegraph · French Polynesia Intelligence",
   description:
-    "What materially happened across the fenua, and why it matters — island by island. Personal intelligence brief for French Polynesia and the Pacific.",
+    "A personal read on what's happening across the fenua and why it matters, island by island, for Tahiti, her islands, and the wider Pacific.",
 };
 
 export default function RootLayout({

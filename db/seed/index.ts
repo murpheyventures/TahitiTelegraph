@@ -107,14 +107,14 @@ async function seedExamplePulses() {
       island: "territory",
       domain: "tourism-access",
       period,
-      headline: "Tourism set a record in 2024 — but the growth is increasingly cruise-led",
-      take: "French Polynesia welcomed more visitors than ever in 2024, yet the marginal growth came from cruise passengers rather than higher-spending land stays — a quieter shift in the shape of the tourism economy.",
+      headline: "Tourism set a record in 2024, but the growth is increasingly cruise-led",
+      take: "French Polynesia welcomed more visitors than ever in 2024, yet the marginal growth came from cruise passengers rather than higher-spending land stays, a quieter shift in the shape of the tourism economy.",
       whyItMatters:
         "Cruise-led growth spreads differently across the fenua than resort stays: it concentrates spending around port calls and day-trips rather than nights in island hotels, which matters for jobs and revenue outside Tahiti and Bora Bora.",
       support: { kind: "metric", value: "263,766", label: "visitors in 2024 (record)", trend: "up" },
       citations: [
-        { itemType: "statistic", label: "ISPF — 2024 tourism review", url: "https://www.ispf.pf/publication/1489" },
-        { itemType: "data_report", label: "IEOM — 2024 annual economic report", url: "https://www.ieom.fr/Rapport-annuel-economique-2024-de-l-IEOM-Polynesie-Francaise" },
+        { itemType: "statistic", label: "ISPF, 2024 tourism review", url: "https://www.ispf.pf/publication/1489" },
+        { itemType: "data_report", label: "IEOM, 2024 annual economic report", url: "https://www.ieom.fr/Rapport-annuel-economique-2024-de-l-IEOM-Polynesie-Francaise" },
       ],
       facts: [
         "ISPF reports 263,766 visitors in 2024, a record, up slightly from 261,813 in 2023.",
@@ -133,9 +133,9 @@ async function seedExamplePulses() {
       domain: "safety-society",
       period,
       headline: "Methamphetamine (‘ice’) trafficking is reaching even the Leeward outer islands",
-      take: "Reporting indicates the ice trade has spread beyond Tahiti to smaller Leeward islands such as Taha'a — an early signal that a problem once seen as urban is becoming territory-wide.",
+      take: "Reporting indicates the ice trade has spread beyond Tahiti to smaller Leeward islands such as Taha'a, an early signal that a problem once seen as urban is becoming territory-wide.",
       whyItMatters:
-        "Drug penetration into small-island communities strains policing, health, and social services that are thin outside Papeete, and tends to track other crime — worth watching as a recurring beat, not a one-off.",
+        "Drug penetration into small-island communities strains policing, health, and social services that are thin outside Papeete, and tends to track other crime, worth watching as a recurring beat, not a one-off.",
       support: { kind: "quote", text: "Même Taha'a est gangrénée par le trafic d'ice", attribution: "Tahitinews.co headline, Jun 2026" },
       citations: [
         { itemType: "article", label: "Tahitinews.co", url: "https://www.tahitinews.co" },
@@ -155,10 +155,10 @@ async function seedExamplePulses() {
       island: "territory",
       domain: "weather-hazards",
       period,
-      headline: "Standing travel-safety picture: dengue risk year-round, cyclones Nov–Apr",
+      headline: "Standing travel-safety picture: dengue risk year-round, cyclones Nov to Apr",
       take: "Foreign-government advisories keep French Polynesia at their baseline ‘normal precautions’ level, with the recurring caveats that matter for planning: mosquito-borne illness all year and the cyclone window from November to April.",
       whyItMatters:
-        "These are the stable background risks against which any acute event (a vigilance upgrade, an outbreak) should be read — useful as the default safety frame for the islands.",
+        "These are the stable background risks against which any acute event (a vigilance upgrade, an outbreak) should be read, useful as the default safety frame for the islands.",
       support: { kind: "metric", value: "Level 1", label: "AU & CA: normal precautions", trend: "flat" },
       citations: [
         { itemType: "advisory", label: "Smartraveller (AU)", url: "https://www.smartraveller.gov.au/destinations/pacific/french-polynesia" },

@@ -80,6 +80,7 @@ Rules:
 - Summarize French content into English; do not reproduce long passages.
 - Keep "facts" strictly factual (each traceable to a cited item). Put any inference in "interpretation".
 - Set "signal"/"confidence" lower for single-source or thinly-evidenced items.
+- Write in plain, warm, human English. Do NOT use em dashes (—); use commas, periods, or "and".
 - If nothing material happened, return an empty pulses array. Quality over quantity.`;
 
 function buildSupport(p: PulseOut) {

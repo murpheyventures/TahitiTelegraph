@@ -5,9 +5,9 @@ import { getSourcesHealth } from "@/lib/data";
 export const dynamic = "force-dynamic";
 
 function fmt(d?: string | null): string {
-  if (!d) return "—";
+  if (!d) return "·";
   const dt = new Date(d);
-  return Number.isNaN(dt.getTime()) ? "—" : dt.toLocaleString("en-US");
+  return Number.isNaN(dt.getTime()) ? "·" : dt.toLocaleString("en-US");
 }
 
 const STATUS_COLOR: Record<string, string> = {
@@ -56,7 +56,7 @@ export default async function SourcesPage() {
                   <td className={`px-4 py-3 ${s.lastStatus ? STATUS_COLOR[s.lastStatus] ?? "text-muted" : "text-faint"}`}>
                     {s.lastStatus ?? "never"}
                   </td>
-                  <td className="px-4 py-3 text-muted">{s.lastItemsNew ?? "—"}</td>
+                  <td className="px-4 py-3 text-muted">{s.lastItemsNew ?? "·"}</td>
                 </tr>
               ))}
             </tbody>

@@ -4,6 +4,7 @@
 
 import { and, desc, eq, sql } from "drizzle-orm";
 import { db, schema } from "@db/client";
+import { tidy, tidyMaybe } from "./text";
 import type {
   AdvisoryView,
   Citation,
@@ -19,18 +20,25 @@ function iso(d: Date | null | undefined): string | null {
   return d ? d.toISOString() : null;
 }
 
+function tidySupport(s: Support | null): Support | null {
+  if (!s) return null;
+  if (s.kind === "metric") return { ...s, value: tidy(s.value), label: tidy(s.label) };
+  return { ...s, text: tidy(s.text), attribution: tidy(s.attribution) };
+}
+
 function toCard(row: typeof schema.analysisOutputs.$inferSelect): PulseCard {
+  const citations = ((row.citations as Citation[]) ?? []).map((c) => ({ ...c, label: tidy(c.label) }));
   return {
     id: row.id,
     island: row.island,
     domain: row.domain,
-    headline: row.headline,
-    take: row.take,
-    whyItMatters: row.whyItMatters,
-    support: (row.support as Support | null) ?? null,
-    citations: (row.citations as Citation[]) ?? [],
-    facts: (row.facts as string[]) ?? [],
-    interpretation: (row.interpretation as string[]) ?? [],
+    headline: tidy(row.headline),
+    take: tidy(row.take),
+    whyItMatters: tidyMaybe(row.whyItMatters),
+    support: tidySupport((row.support as Support | null) ?? null),
+    citations,
+    facts: ((row.facts as string[]) ?? []).map(tidy),
+    interpretation: ((row.interpretation as string[]) ?? []).map(tidy),
     signal: (row.signal as Signal) ?? "moderate",
     confidence: row.confidence,
     generatedAt: iso(row.generatedAt) ?? "",
@@ -99,10 +107,10 @@ export async function getAdvisories(): Promise<AdvisoryView[]> {
   return rows.map((r) => ({
     id: r.id,
     sourceId: r.sourceId,
-    level: r.level,
-    prevLevel: r.prevLevel,
+    level: tidyMaybe(r.level),
+    prevLevel: tidyMaybe(r.prevLevel),
     updatedAt: iso(r.updatedAt),
-    summary: r.summary,
+    summary: tidyMaybe(r.summary),
     url: r.url,
   }));
 }
@@ -116,7 +124,7 @@ export async function getRecentOfficialNotices(limit = 12): Promise<OfficialNoti
   return rows.map((r) => ({
     id: r.id,
     noticeType: r.noticeType,
-    title: r.title,
+    title: tidy(r.title),
     issuedAt: iso(r.issuedAt),
     url: r.url,
     domains: r.domains ?? [],
