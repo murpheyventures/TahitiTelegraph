@@ -15,16 +15,15 @@ export interface RssSource {
   feedUrl: string;
 }
 
-// Verification status from the first dry-run (2026-06-27):
-//  - tahitinews-co  ✅ /feed/ returns valid RSS (10 items)
-//  - radio1         ⚠️ /feed/ → 403; audit says feed lives at /custom-rss/
-//  - tntv           ❌ /feed/ returns HTML, not RSS — find the real feed
-//  - tahiti-infos   ❌ custom CMS; /spip.php?page=backend → 404 — find the real feed
+// Feed URLs confirmed by probe on 2026-06-27 (see pipeline notes):
+//   ✅ tahiti-infos  https://www.tahiti-infos.com/xml/syndication.rss  (text/xml)
+//   ✅ tahitinews-co https://www.tahitinews.co/feed/                   (valid RSS, ~10 items)
+//   ❌ radio1        /feed/ → 403 (Cloudflare bot-block, even browser UA); /custom-rss/ is an
+//                    HTML plugin page, not a feed. Don't evade the block — monitor / Phase-2 crawl.
+//   ❌ tntv          no RSS endpoint (all candidates return HTML) — Phase-2 HTML crawl / sitemap.
 export const RSS_FEEDS: RssSource[] = [
-  { id: "tahitinews-co", feedUrl: "https://www.tahitinews.co/feed/" }, // verified
-  { id: "radio1", feedUrl: "https://www.radio1.pf/custom-rss/" }, // verify
-  { id: "tntv", feedUrl: "https://www.tntv.pf/feed/" }, // TODO: locate real feed
-  { id: "tahiti-infos", feedUrl: "https://www.tahiti-infos.com/spip.php?page=backend" }, // TODO: locate real feed
+  { id: "tahiti-infos", feedUrl: "https://www.tahiti-infos.com/xml/syndication.rss" },
+  { id: "tahitinews-co", feedUrl: "https://www.tahitinews.co/feed/" },
 ];
 
 const parser = new Parser({

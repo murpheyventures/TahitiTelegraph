@@ -57,8 +57,8 @@ async function seedTopics() {
 
 const SOURCES: (typeof schema.sources.$inferInsert)[] = [
   { id: "tahiti-infos", name: "Tahiti Infos", url: "https://www.tahiti-infos.com", sourceType: "news", ingestionMethod: "rss", language: "fr", cadence: "hourly", licenceNote: "Copyrighted FR press; personal-use full-text ingest only." },
-  { id: "radio1", name: "Radio 1 Tahiti", url: "https://www.radio1.pf", sourceType: "news", ingestionMethod: "rss", language: "fr", cadence: "hourly", licenceNote: "Copyrighted; custom RSS at /custom-rss/." },
-  { id: "tntv", name: "TNTV", url: "https://www.tntv.pf", sourceType: "news", ingestionMethod: "rss", language: "fr", cadence: "hourly", licenceNote: "Copyrighted; verify feed." },
+  { id: "radio1", name: "Radio 1 Tahiti", url: "https://www.radio1.pf", sourceType: "news", ingestionMethod: "crawl", language: "fr", cadence: "hourly", active: false, licenceNote: "RSS /feed/ → 403 (Cloudflare bot-block). Monitor / Phase-2 crawl." },
+  { id: "tntv", name: "TNTV", url: "https://www.tntv.pf", sourceType: "news", ingestionMethod: "crawl", language: "fr", cadence: "hourly", active: false, licenceNote: "No public RSS (SPA). Phase-2 HTML crawl / sitemap." },
   { id: "tahitinews-co", name: "Tahitinews.co", url: "https://www.tahitinews.co", sourceType: "news", ingestionMethod: "rss", language: "fr", cadence: "hourly", licenceNote: "Active aggregator; dedup against majors." },
   { id: "la1ere-polynesie", name: "Polynésie la 1ère", url: "https://la1ere.franceinfo.fr/polynesie", sourceType: "news", ingestionMethod: "crawl", language: "fr", cadence: "daily", licenceNote: "France Télévisions IP; personal use only." },
   { id: "presidence-pf", name: "Présidence de la Polynésie française", url: "https://www.presidence.pf", sourceType: "official", ingestionMethod: "rss", language: "fr", cadence: "daily", licenceNote: "Official communiqués." },
