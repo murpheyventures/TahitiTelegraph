@@ -11,6 +11,7 @@ import { sql as pg, db } from "../../db/client";
 import { sql } from "drizzle-orm";
 import { tagArticles } from "./tag";
 import { generateIslandPulse } from "./island-pulse";
+import { generateCruisePulse } from "./cruise-pulse";
 import { getClient } from "./claude";
 
 function arg(name: string): string | undefined {
@@ -30,6 +31,9 @@ async function islandsWithRecentItems(): Promise<string[]> {
 
 async function main() {
   console.log("\nTahitiTelegraph analyze\n");
+
+  // Deterministic cruise-deployment rollup from cruise_port_calls (no LLM needed).
+  await generateCruisePulse();
 
   if (!getClient()) {
     console.log("ANTHROPIC_API_KEY not set. Add it to .env (and GitHub Actions secrets) to run analysis.\n");
