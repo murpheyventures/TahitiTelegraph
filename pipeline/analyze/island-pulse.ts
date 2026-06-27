@@ -80,6 +80,7 @@ Rules:
 - Summarize French content into English; do not reproduce long passages.
 - Keep "facts" strictly factual (each traceable to a cited item). Put any inference in "interpretation".
 - Set "signal"/"confidence" lower for single-source or thinly-evidenced items.
+- Treat concrete tourism and economic indicators as MATERIAL even if routine: monthly airport passenger traffic, visitor arrivals, cruise calls or deployments, hotel openings/closures/renovations, and new or cancelled air routes. If the corpus contains such an update with a number or named change, emit a pulse for it (use the metric support fields).
 - Write in plain, warm, human English. Do NOT use em dashes (—); use commas, periods, or "and".
 - If nothing material happened, return an empty pulses array. Quality over quantity.`;
 
@@ -153,7 +154,7 @@ export async function generateIslandPulse(islandSlug: string): Promise<number> {
 
   const msg = await client.messages.create({
     model: MODEL,
-    max_tokens: 2000,
+    max_tokens: 4096, // big corpora (e.g. Tahiti) need room or the tool call truncates
     system: [
       { type: "text", text: SYSTEM },
       // Cache the corpus so repeated runs in a window are cheaper.
@@ -163,6 +164,10 @@ export async function generateIslandPulse(islandSlug: string): Promise<number> {
     tool_choice: { type: "tool", name: TOOL.name },
     messages: [{ role: "user", content: `Produce pulses for ${island.name}.` }],
   });
+
+  if (msg.stop_reason === "max_tokens") {
+    console.log(`  [pulse] ${islandSlug}: WARN response hit max_tokens (corpus ${corpus.length} items).`);
+  }
 
   const out = toolInput<{ pulses: PulseOut[] }>(msg, TOOL.name);
   const pulses = out?.pulses ?? [];
