@@ -110,7 +110,7 @@ export function SectionTabs({
       {/* Cruise calls panel (Tourism tab, Cruise or All) */}
       {showCruise ? (
         <section className="pb-6">
-          <h3 className="mb-3 font-serif text-lg font-medium text-fg">Upcoming cruise calls</h3>
+          <h3 className="mb-3 font-serif text-lg font-medium text-fg">Recent &amp; upcoming cruise calls</h3>
           <div className="overflow-x-auto rounded-[var(--radius-card)] border border-border">
             <table className="w-full border-collapse text-left text-[0.82rem]">
               <thead>

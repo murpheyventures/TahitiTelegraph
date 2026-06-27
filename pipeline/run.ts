@@ -13,6 +13,7 @@ import { collectMeteo } from "./collectors/meteo";
 import { collectAdvisories } from "./collectors/advisories";
 import { collectCruiseMapper } from "./collectors/cruisemapper";
 import { collectAdt } from "./collectors/adt";
+import { NEWS_SITES, collectNewsSite } from "./collectors/htmlNews";
 
 function arg(name: string): string | undefined {
   const hit = process.argv.find((a) => a.startsWith(`--${name}=`));
@@ -53,6 +54,10 @@ async function main() {
     console.log(`  ${cm.source} … ${cm.error ? `ERROR: ${cm.error}` : `seen ${cm.seen}, ${dryRun ? "would add" : "added"} ${cm.added}`}`);
     const adt = await collectAdt({ dryRun });
     console.log(`  ${adt.source} … ${adt.error ? `ERROR: ${adt.error}` : `seen ${adt.seen}, ${dryRun ? "would add" : "added"} ${adt.added}`}`);
+    for (const site of NEWS_SITES) {
+      const r = await collectNewsSite(site, { dryRun });
+      console.log(`  ${r.source} … ${r.error ? `ERROR: ${r.error}` : `seen ${r.seen}, ${dryRun ? "would add" : "added"} ${r.added}`}`);
+    }
   }
 
   const okFeeds = results.filter((r) => !r.error).length;

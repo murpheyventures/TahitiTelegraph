@@ -1,10 +1,12 @@
 // CruiseMapper port-call collector → cruise_port_calls.
 // robots.txt allows /ports (verified in the tourism audit). Proprietary
 // aggregated schedule data: private monitoring only (review_required if public).
-// Forward schedules change, so calls are stored with is_forward = true.
+// The schedule table is Day | Ship | Arrival | Departure; the cruise line is not
+// in the table, so it's mapped from the ship name. Calls are a refreshed
+// snapshot (cleared per source each run), with is_forward set vs today.
 
 import * as cheerio from "cheerio";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db, schema } from "../../db/client";
 import { BROWSER_UA, contentHash, politeFetch } from "../lib/http";
 
@@ -13,10 +15,34 @@ interface PortPage {
   url: string;
 }
 
-// Papeete URL is verified; add Bora Bora / Moorea / Raiatea port IDs once known.
 export const CRUISE_PORTS: PortPage[] = [
   { port: "papeete", url: "https://www.cruisemapper.com/ports/papeete-port-109" },
+  { port: "moorea", url: "https://www.cruisemapper.com/ports/moorea-island-port-418" },
+  { port: "bora-bora", url: "https://www.cruisemapper.com/ports/bora-bora-island-port-107" },
 ];
+
+// Cruise line is absent from the port schedule table; map it from the ship name.
+const SHIP_LINE: Record<string, string> = {
+  "Paul Gauguin": "Paul Gauguin Cruises",
+  "Star Breeze": "Windstar Cruises",
+  "Star Pride": "Windstar Cruises",
+  "Wind Spirit": "Windstar Cruises",
+  "Wind Star": "Windstar Cruises",
+  "Norwegian Spirit": "Norwegian Cruise Line",
+  "Norwegian Sun": "Norwegian Cruise Line",
+  "Aranui 5": "Aranui",
+  "Le Soléal": "Ponant",
+  "Le Bellot": "Ponant",
+  "Le Jacques Cartier": "Ponant",
+  "Silver Whisper": "Silversea",
+  "Silver Shadow": "Silversea",
+  "Silver Muse": "Silversea",
+  "Seven Seas Navigator": "Regent Seven Seas",
+  "Seven Seas Explorer": "Regent Seven Seas",
+  Insignia: "Oceania Cruises",
+  Regatta: "Oceania Cruises",
+  Nautica: "Oceania Cruises",
+};
 
 export interface CollectResult {
   source: string;
@@ -25,15 +51,21 @@ export interface CollectResult {
   error?: string;
 }
 
-function parseDate(s: string): Date | null {
-  const t = s.trim();
-  if (!t || t.length < 6) return null;
-  const d = new Date(t);
+function dateFrom(s: string): Date | null {
+  const m = s.match(/(\d{1,2}\s+[A-Za-z]+,?\s*\d{4})/);
+  if (!m) return null;
+  const d = new Date(m[1].replace(",", ""));
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
 export async function collectCruiseMapper(opts: { dryRun?: boolean } = {}): Promise<CollectResult> {
   const result: CollectResult = { source: "cruisemapper-fp", seen: 0, added: 0 };
+  const now = new Date();
+
+  // Refresh: a schedule is a snapshot, not append-only history.
+  if (!opts.dryRun) {
+    await db.delete(schema.cruisePortCalls).where(eq(schema.cruisePortCalls.sourceId, "cruisemapper-fp"));
+  }
 
   for (const p of CRUISE_PORTS) {
     let html: string;
@@ -47,40 +79,27 @@ export async function collectCruiseMapper(opts: { dryRun?: boolean } = {}): Prom
     const $ = cheerio.load(html);
     for (const tr of $("table tr").toArray()) {
       const $tr = $(tr);
-      const ship = $tr.find('a[href*="/ships/"]').first().text().trim();
-      if (!ship) continue;
-      const line = $tr.find('a[href*="/cruise-lines/"]').first().text().trim() || null;
-      const cells = $tr.find("td").toArray().map((td) => $(td).text().trim());
-      let arrive: Date | null = null;
-      for (const c of cells) {
-        const d = parseDate(c);
-        if (d) {
-          arrive = d;
-          break;
-        }
-      }
+      const cells = $tr.find("td").toArray().map((td) => $(td).text().replace(/\s+/g, " ").trim());
+      const ship = ($tr.find('a[href*="/ships/"]').first().text().trim() || cells[1] || "").trim();
+      if (!ship || cells.length < 2) continue; // header / non-schedule row
+
+      const arrive = dateFrom(cells[0]);
+      const cruiseLine = SHIP_LINE[ship] ?? null;
       result.seen++;
-      const hash = contentHash(p.port, ship, arrive?.toISOString() ?? cells.join("|"));
+      const hash = contentHash(p.port, ship, arrive?.toISOString() ?? cells[0]);
 
       if (opts.dryRun) {
         result.added++;
         continue;
       }
 
-      const dup = await db
-        .select({ id: schema.cruisePortCalls.id })
-        .from(schema.cruisePortCalls)
-        .where(and(eq(schema.cruisePortCalls.sourceId, "cruisemapper-fp"), eq(schema.cruisePortCalls.contentHash, hash)))
-        .limit(1);
-      if (dup.length) continue;
-
       await db.insert(schema.cruisePortCalls).values({
         sourceId: "cruisemapper-fp",
         port: p.port,
         shipName: ship,
-        cruiseLine: line,
+        cruiseLine,
         arrive,
-        isForward: true,
+        isForward: arrive ? arrive >= now : true,
         contentHash: hash,
       });
       result.added++;

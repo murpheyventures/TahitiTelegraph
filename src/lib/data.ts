@@ -116,12 +116,12 @@ export async function getAdvisories(): Promise<AdvisoryView[]> {
   }));
 }
 
-/** Upcoming cruise port calls (scheduled), soonest first. */
-export async function getUpcomingCruiseCalls(limit = 12): Promise<CruiseCallView[]> {
+/** Recent and upcoming cruise port calls, most recent first. */
+export async function getUpcomingCruiseCalls(limit = 14): Promise<CruiseCallView[]> {
   const rows = await db
     .select()
     .from(schema.cruisePortCalls)
-    .orderBy(sql`${schema.cruisePortCalls.arrive} asc nulls last`)
+    .orderBy(sql`${schema.cruisePortCalls.arrive} desc nulls last`)
     .limit(limit);
   return rows.map((r) => ({
     id: r.id,
