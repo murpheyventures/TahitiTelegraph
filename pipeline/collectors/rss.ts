@@ -15,11 +15,16 @@ export interface RssSource {
   feedUrl: string;
 }
 
+// Verification status from the first dry-run (2026-06-27):
+//  - tahitinews-co  ✅ /feed/ returns valid RSS (10 items)
+//  - radio1         ⚠️ /feed/ → 403; audit says feed lives at /custom-rss/
+//  - tntv           ❌ /feed/ returns HTML, not RSS — find the real feed
+//  - tahiti-infos   ❌ custom CMS; /spip.php?page=backend → 404 — find the real feed
 export const RSS_FEEDS: RssSource[] = [
-  { id: "radio1", feedUrl: "https://www.radio1.pf/feed/" },
-  { id: "tahitinews-co", feedUrl: "https://www.tahitinews.co/feed/" },
-  { id: "tntv", feedUrl: "https://www.tntv.pf/feed/" },
-  { id: "tahiti-infos", feedUrl: "https://www.tahiti-infos.com/spip.php?page=backend" },
+  { id: "tahitinews-co", feedUrl: "https://www.tahitinews.co/feed/" }, // verified
+  { id: "radio1", feedUrl: "https://www.radio1.pf/custom-rss/" }, // verify
+  { id: "tntv", feedUrl: "https://www.tntv.pf/feed/" }, // TODO: locate real feed
+  { id: "tahiti-infos", feedUrl: "https://www.tahiti-infos.com/spip.php?page=backend" }, // TODO: locate real feed
 ];
 
 const parser = new Parser({
