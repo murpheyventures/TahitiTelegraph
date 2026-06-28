@@ -157,8 +157,9 @@ export async function generateIslandPulse(islandSlug: string): Promise<number> {
     max_tokens: 4096, // big corpora (e.g. Tahiti) need room or the tool call truncates
     system: [
       { type: "text", text: SYSTEM },
-      // Cache the corpus so repeated runs in a window are cheaper.
-      { type: "text", text: `ISLAND: ${island.name}\n\nCORPUS:\n${corpusText}`, cache_control: { type: "ephemeral" } },
+      // No cache_control: each island's corpus is unique and runs are daily, so a
+      // cache write here would never be read (pure 1.25x waste).
+      { type: "text", text: `ISLAND: ${island.name}\n\nCORPUS:\n${corpusText}` },
     ],
     tools: [TOOL],
     tool_choice: { type: "tool", name: TOOL.name },

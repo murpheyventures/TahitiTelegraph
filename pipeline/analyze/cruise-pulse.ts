@@ -1,7 +1,8 @@
 // Cruise-deployment rollup. The cruise-NEWS sources (TravelPulse, Paul Gauguin
-// press, Aranui) are all bot-blocked (403) or JS-rendered, and we don't evade
-// those. But the substance of the beat, which lines/ships deploy in FP and the
-// small vs large-ship mix, is already in cruise_port_calls. This synthesizes
+// press, Aranui) are bot-blocked (403) or JS-rendered, so they need a headless
+// crawl (now permitted for personal use, see README Access policy) which isn't
+// built yet. Meanwhile the substance of the beat, which lines/ships deploy in FP
+// and the small vs large-ship mix, is already in cruise_port_calls. This synthesizes
 // that schedule into one grounded `cruise` pulse, DETERMINISTICALLY (no LLM, so
 // no hallucination over schedule data), cited to CruiseMapper. Refreshes itself.
 

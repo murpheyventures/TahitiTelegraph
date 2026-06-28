@@ -1,9 +1,13 @@
 // Analysis orchestrator: tag new articles, then synthesize island pulses.
 //
-//   npm run analyze                      # tag + pulses for islands with new items
+//   npm run analyze                      # pulses ONLY for islands with new items (cheap, default)
+//   npm run analyze -- --all             # regenerate every island with recent content (full rebuild)
 //   npm run analyze -- --island=tahiti   # tag + pulse for one island
+//   npm run analyze -- --since-hours=48  # widen the "new items" window (default 26h)
 //   npm run analyze -- --tag-only        # tagging pass only
 //
+// Steady-state cost control: by default only islands that received new articles
+// since the last run are regenerated, so quiet windows cost almost nothing.
 // Requires ANTHROPIC_API_KEY; degrades to a no-op with a message if unset.
 
 import "dotenv/config";
@@ -20,11 +24,20 @@ function arg(name: string): string | undefined {
 }
 const hasFlag = (name: string) => process.argv.includes(`--${name}`);
 
-async function islandsWithRecentItems(): Promise<string[]> {
+/** Islands that received NEW articles within the window (default: since the last daily run). */
+async function islandsWithNewItems(hours: number): Promise<string[]> {
+  const since = new Date(Date.now() - hours * 3600_000).toISOString();
+  const rows = await db.execute(
+    sql`select distinct unnest(islands) as island from articles where retrieved_at >= ${since}`
+  );
+  return (rows as unknown as { island: string }[]).map((r) => r.island).filter(Boolean);
+}
+
+/** All islands with content in the last 14 days — for a full rebuild (--all). */
+async function islandsWithAnyItems(): Promise<string[]> {
   const since = new Date(Date.now() - 14 * 86400_000).toISOString();
   const rows = await db.execute(
-    sql`select distinct unnest(islands) as island from articles
-        where tagged = true and retrieved_at >= ${since}`
+    sql`select distinct unnest(islands) as island from articles where retrieved_at >= ${since}`
   );
   return (rows as unknown as { island: string }[]).map((r) => r.island).filter(Boolean);
 }
@@ -46,9 +59,14 @@ async function main() {
 
   if (!hasFlag("tag-only")) {
     const only = arg("island");
-    const islands = only ? [only] : await islandsWithRecentItems();
+    const sinceHours = Number(arg("since-hours") ?? 26);
+    const islands = only
+      ? [only]
+      : hasFlag("all")
+        ? await islandsWithAnyItems()
+        : await islandsWithNewItems(sinceHours);
     if (!islands.length) {
-      console.log("  No islands with recent tagged items. Ingest first (npm run ingest).");
+      console.log(`  No islands with new items in the last ${sinceHours}h; pulses unchanged (no LLM calls).`);
     }
     for (const slug of islands) {
       await generateIslandPulse(slug);

@@ -2,8 +2,9 @@
 // fetch each article for a clean title + body, store as articles. Used for
 // official/airline sites that have no RSS but do server-render article links.
 //
-// Air Tahiti (403 bot-block) and Air Moana (no static news page) are NOT here;
-// their route news already flows through the local news feeds.
+// Air Tahiti (403 to plain fetch) and Air Moana (no static news page) are not
+// wired here yet; their route news flows through the local feeds. Both are
+// headless-crawl candidates (permitted for personal use, see README Access policy).
 
 import * as cheerio from "cheerio";
 import { and, eq } from "drizzle-orm";

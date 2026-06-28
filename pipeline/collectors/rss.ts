@@ -26,14 +26,14 @@ const fpFilter = (s: string) => FP_RE.test(s);
 //   ✅ tahiti-infos  https://www.tahiti-infos.com/xml/syndication.rss  (text/xml)
 //   ✅ tahitinews-co https://www.tahitinews.co/feed/                   (valid RSS, ~10 items)
 //   ❌ radio1        /feed/ → 403 (Cloudflare bot-block, even browser UA); /custom-rss/ is an
-//                    HTML plugin page, not a feed. Don't evade the block — monitor / Phase-2 crawl.
+//                    HTML plugin page, not a feed. Headless-crawl candidate (see README Access policy).
 //   ❌ tntv          no RSS endpoint (all candidates return HTML) — Phase-2 HTML crawl / sitemap.
 export const RSS_FEEDS: RssSource[] = [
   { id: "tahiti-infos", feedUrl: "https://www.tahiti-infos.com/xml/syndication.rss" },
   { id: "tahitinews-co", feedUrl: "https://www.tahitinews.co/feed/" },
   // Tourism trade feeds — broad, so FP-filtered.
   //  ✅ HospitalityNet news.xml (verified). Openings also at /rss/announcements/openings.xml.
-  //  ❌ TravelPulse has no native RSS (/rss → 403); needs an HTML crawl (Phase 2).
+  //  ❌ TravelPulse has no native RSS (/rss → 403, site-wide); needs a headless crawl (allowed per Access policy).
   { id: "hospitalitynet", feedUrl: "https://www.hospitalitynet.org/rss/news.xml", filter: fpFilter },
 ];
 

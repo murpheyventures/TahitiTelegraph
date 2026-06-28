@@ -6,8 +6,10 @@ import { createHash } from "node:crypto";
 export const USER_AGENT =
   "TahitiTelegraph/0.1 (personal, non-commercial research aggregator)";
 
-// Standard browser UA for public gov HTML pages that serve a JS shell to
-// unusual agents. We only read public info, never to evade a block.
+// Standard browser UA for public pages that serve a JS shell or block unusual
+// agents. We read public info only; for pages that need JS or block a plain
+// fetch, a headless browser is permitted for personal use (see README Access
+// policy). Still respect robots.txt, paywalls/logins, and polite rate limits.
 export const BROWSER_UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 

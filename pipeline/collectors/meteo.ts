@@ -5,7 +5,8 @@
 //   - detect a server-rendered ACTIVE alert if one is present (defensive), and
 //   - otherwise store an explicit "see official" status (NEVER a fabricated
 //     green), with the link, so the ribbon points users to the source.
-// Live level parsing is Phase 2 (headless render or the AJAX/data endpoint).
+// Live level parsing needs a headless render or the AJAX/data endpoint
+// (headless now permitted for personal use, see README Access policy); not built yet.
 
 import { eq } from "drizzle-orm";
 import { db, schema } from "../../db/client";

@@ -9,6 +9,21 @@ island**. Not a news mirror; every claim links back to its source.
 > copyright posture changes the moment it becomes public. See
 > `tahiti_french_polynesia_feasibility_audit.md`.
 
+## Access policy (personal-use)
+
+Because this is a private, non-commercial tool, collectors **may use a headless
+browser** to render JavaScript pages and to read public pages that block a plain
+HTTP fetch (e.g. TravelPulse, Air Tahiti, Radio 1, Paul Gauguin's press list,
+the live Météo-France vigilance level). Guardrails that still apply:
+
+- **Respect `robots.txt` Disallow** rules.
+- **Never bypass paywalls or login walls.**
+- Polite rate limits, a descriptive User-Agent, caching, and back-off on errors.
+- This relaxation is tied to **personal use**. If the project is ever published,
+  shared, or monetized, revert to the stricter posture (copyrighted news =
+  metadata + link only; no bot-gated scraping) and re-run the commercial review
+  in the audit files.
+
 ## Stack
 - **Next.js 16 / React 19 / Tailwind 4** (App Router, TS) — the site (`src/`).
 - **Neon Postgres + Drizzle** (`db/`) — shared by app and pipeline.
