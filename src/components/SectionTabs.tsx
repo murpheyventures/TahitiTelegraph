@@ -119,6 +119,7 @@ export function SectionTabs({
                   <th className="px-4 py-2.5 font-semibold">Port</th>
                   <th className="px-4 py-2.5 font-semibold">Ship</th>
                   <th className="px-4 py-2.5 font-semibold">Line</th>
+                  <th className="px-4 py-2.5 font-semibold">Source</th>
                 </tr>
               </thead>
               <tbody>
@@ -128,6 +129,9 @@ export function SectionTabs({
                     <td className="px-4 py-2 text-fg">{portLabel(c.port)}</td>
                     <td className="px-4 py-2 text-fg">{c.shipName ?? "·"}</td>
                     <td className="px-4 py-2 text-muted">{c.cruiseLine ?? "·"}</td>
+                    <td className="px-4 py-2">{c.sourceUrl ? (
+                      <a href={c.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">CruiseMapper</a>
+                    ) : "·"}</td>
                   </tr>
                 ))}
               </tbody>

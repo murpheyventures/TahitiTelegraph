@@ -70,6 +70,7 @@ export interface CruiseCallView {
   shipName?: string | null;
   cruiseLine?: string | null;
   arrive?: string | null;
+  sourceUrl?: string | null;
 }
 
 export interface SourceHealth {

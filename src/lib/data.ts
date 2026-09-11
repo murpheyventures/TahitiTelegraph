@@ -116,6 +116,12 @@ export async function getAdvisories(): Promise<AdvisoryView[]> {
   }));
 }
 
+const CRUISEMAPPER_PORT_URL: Record<string, string> = {
+  papeete: "https://www.cruisemapper.com/ports/papeete-port-109",
+  moorea: "https://www.cruisemapper.com/ports/moorea-island-port-418",
+  "bora-bora": "https://www.cruisemapper.com/ports/bora-bora-island-port-107",
+};
+
 /** Recent and upcoming cruise port calls, most recent first. */
 export async function getUpcomingCruiseCalls(limit = 14): Promise<CruiseCallView[]> {
   const rows = await db
@@ -129,6 +135,7 @@ export async function getUpcomingCruiseCalls(limit = 14): Promise<CruiseCallView
     shipName: tidyMaybe(r.shipName),
     cruiseLine: tidyMaybe(r.cruiseLine),
     arrive: iso(r.arrive),
+    sourceUrl: r.port ? CRUISEMAPPER_PORT_URL[r.port] ?? null : null,
   }));
 }
 
