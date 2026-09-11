@@ -32,9 +32,10 @@ export const RSS_FEEDS: RssSource[] = [
   { id: "tahiti-infos", feedUrl: "https://www.tahiti-infos.com/xml/syndication.rss" },
   { id: "tahitinews-co", feedUrl: "https://www.tahitinews.co/feed/" },
   // Tourism trade feeds — broad, so FP-filtered.
-  //  ✅ HospitalityNet news.xml (verified). Openings also at /rss/announcements/openings.xml.
-  //  ❌ TravelPulse has no native RSS (/rss → 403, site-wide); needs a headless crawl (allowed per Access policy).
   { id: "hospitalitynet", feedUrl: "https://www.hospitalitynet.org/rss/news.xml", filter: fpFilter },
+  { id: "hospitalitynet-openings", feedUrl: "https://www.hospitalitynet.org/rss/announcements/openings.xml", filter: fpFilter },
+  // FM27 sustainable tourism strategy (WordPress RSS, verified Sep 2026).
+  { id: "fm27", feedUrl: "https://fm27.pf/en/feed/" },
 ];
 
 const parser = new Parser({
