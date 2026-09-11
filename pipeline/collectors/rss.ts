@@ -34,6 +34,10 @@ export const RSS_FEEDS: RssSource[] = [
   // Tourism trade feeds — broad, so FP-filtered.
   { id: "hospitalitynet", feedUrl: "https://www.hospitalitynet.org/rss/news.xml", filter: fpFilter },
   { id: "hospitalitynet-openings", feedUrl: "https://www.hospitalitynet.org/rss/announcements/openings.xml", filter: fpFilter },
+  // Cruise trade press — broad, FP-filtered.
+  { id: "cruiseindustrynews", feedUrl: "https://cruiseindustrynews.com/feed/", filter: fpFilter },
+  // Asia-Pacific B2B travel/hospitality trade press — broad, FP-filtered.
+  { id: "traveldailynews-asia", feedUrl: "https://www.traveldailynews.asia/feed/", filter: fpFilter },
   // FM27 sustainable tourism strategy (WordPress RSS, verified Sep 2026).
   { id: "fm27", feedUrl: "https://fm27.pf/en/feed/" },
 ];
