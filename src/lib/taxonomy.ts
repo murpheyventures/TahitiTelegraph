@@ -52,6 +52,7 @@ export const DOMAINS: Domain[] = [
       { slug: "rebrands-ownership", labelEn: "Rebrands & ownership", labelFr: "Changement d'enseigne / propriété" },
       { slug: "hotel-pipeline", labelEn: "Hotel pipeline", labelFr: "Projets hôteliers" },
       { slug: "luxury-resorts", labelEn: "Luxury resorts", labelFr: "Resorts de luxe" },
+      { slug: "resort-activities", labelEn: "Resort activities & excursions", labelFr: "Activités & excursions hôtelières" },
     ],
   },
   {

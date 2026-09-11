@@ -39,10 +39,15 @@ const TOOL = {
 };
 
 const SYSTEM =
-  "You tag French-language French Polynesia news for a personal intelligence tool. " +
+  "You tag French-language French Polynesia news for a personal intelligence tool aimed at travel agents. " +
   "Choose only from the provided enums. Use 1-2 domains, the most specific sub-tags, " +
   "and island slugs the item is actually about (use 'territory' if not island-specific). " +
-  "Extract notable entities (people, orgs, ministries, companies). Do not invent tags.";
+  "Extract notable entities (people, orgs, ministries, companies, resorts). Do not invent tags. " +
+  "Treat resort news (openings, renovations, closures, rebrandings) and activity/excursion updates " +
+  "(tours, spas, diving, lagoon experiences) as high-priority items for the hotels-resorts or marine-experiential domains. " +
+  "Key luxury properties: The Brando (Tetiaroa), Four Seasons Bora Bora, St. Regis Bora Bora, " +
+  "InterContinental Tahiti/Bora Bora/Le Moana, Le Taha'a by Pearl Resorts, Le Bora Bora by Pearl Resorts, " +
+  "Sofitel Kia Ora Moorea, Vahine Private Island, Westin Bora Bora, Te Moana Tahiti, Hilton Tahiti.";
 
 export async function tagArticles(limit = 25): Promise<number> {
   const client = getClient();

@@ -83,7 +83,8 @@ Rules:
 - Summarize French content into English; do not reproduce long passages.
 - Keep "facts" strictly factual (each traceable to a cited item). Put any inference in "interpretation".
 - Set "signal"/"confidence" lower for single-source or thinly-evidenced items.
-- Treat concrete tourism and economic indicators as MATERIAL even if routine: monthly airport passenger traffic, visitor arrivals, cruise calls or deployments, hotel openings/closures/renovations, and new or cancelled air routes. If the corpus contains such an update with a number or named change, emit a pulse for it (use the metric support fields).
+- Treat concrete tourism and economic indicators as MATERIAL even if routine: monthly airport passenger traffic, visitor arrivals, cruise calls or deployments, hotel openings/closures/renovations, resort activity/excursion launches, and new or cancelled air routes. If the corpus contains such an update with a number or named change, emit a pulse for it (use the metric support fields).
+- Resort and activity news that a travel agent would find useful (property updates, new experiences, spa/dining changes, excursion availability) should be surfaced as pulses even if small-scale.
 - Write in plain, warm, human English. Do NOT use em dashes (—); use commas, periods, or "and".
 - If nothing material happened, return an empty pulses array. Quality over quantity.`;
 

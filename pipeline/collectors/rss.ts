@@ -19,7 +19,7 @@ export interface RssSource {
 
 // Keep only French Polynesia-relevant items from broad international feeds.
 const FP_RE =
-  /\b(bora ?bora|moorea|tahiti|polynesia|polyn[eé]sie|raiatea|taha'?a|huahine|maupiti|fakarava|rangiroa|tikehau|manihi|marquesas|marquises|nuku ?hiva|hiva ?oa|papeete|tuamotu|austral|gambier|fenua|pacific beachcomber|the brando|aranui|paul gauguin|air tahiti|air moana)\b/i;
+  /\b(bora ?bora|moorea|tahiti|tetiaroa|polynesia|polyn[eé]sie|raiatea|taha'?a|huahine|maupiti|fakarava|rangiroa|tikehau|manihi|marquesas|marquises|nuku ?hiva|hiva ?oa|papeete|tuamotu|austral|gambier|fenua|pacific beachcomber|the brando|aranui|paul gauguin|air tahiti|air moana|four seasons.*bora|st\.? regis.*bora|intercontinental.*tahiti|intercontinental.*bora|intercontinental.*moana|le taha'?a.*pearl|pearl resorts|sofitel kia ora|vahine.*island|westin.*bora|te moana tahiti|hilton.*tahiti)\b/i;
 const fpFilter = (s: string) => FP_RE.test(s);
 
 // Feed URLs confirmed by probe on 2026-06-27 (see pipeline notes):
