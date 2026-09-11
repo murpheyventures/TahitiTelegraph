@@ -8,7 +8,7 @@
 //
 // Steady-state cost control: by default only islands that received new articles
 // since the last run are regenerated, so quiet windows cost almost nothing.
-// Requires ANTHROPIC_API_KEY; degrades to a no-op with a message if unset.
+// Requires DEEPSEEK_API_KEY; degrades to a no-op with a message if unset.
 
 import "dotenv/config";
 import { sql as pg, db } from "../../db/client";
@@ -49,7 +49,7 @@ async function main() {
   await generateCruisePulse();
 
   if (!getClient()) {
-    console.log("ANTHROPIC_API_KEY not set. Add it to .env (and GitHub Actions secrets) to run analysis.\n");
+    console.log("DEEPSEEK_API_KEY not set. Add it to .env (and GitHub Actions secrets) to run analysis.\n");
     await pg.end({ timeout: 5 });
     return;
   }

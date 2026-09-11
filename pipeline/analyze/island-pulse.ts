@@ -1,5 +1,5 @@
 // Island-pulse synthesis. For one island, gather recent tagged items and ask
-// Claude to produce grounded "what happened / why it matters" pulses, citing
+// DeepSeek to produce grounded "what happened / why it matters" pulses, citing
 // corpus items by number (so URLs can't be hallucinated). Writes analysis_outputs.
 
 import { and, desc, gte, sql } from "drizzle-orm";
@@ -37,37 +37,40 @@ interface PulseOut {
 }
 
 const TOOL = {
-  name: "emit_pulses",
-  description:
-    "Emit 0-4 grounded intelligence pulses for the island, each citing corpus item numbers.",
-  input_schema: {
-    type: "object" as const,
-    properties: {
-      pulses: {
-        type: "array",
-        items: {
-          type: "object",
-          properties: {
-            domain: { type: "string", enum: DOMAIN_VOCAB },
-            headline: { type: "string" },
-            take: { type: "string", description: "What this means, plain English." },
-            whyItMatters: { type: "string" },
-            supportMetricValue: { type: "string" },
-            supportMetricLabel: { type: "string" },
-            supportTrend: { type: "string", enum: ["up", "down", "flat"] },
-            supportQuote: { type: "string" },
-            supportQuoteAttribution: { type: "string" },
-            facts: { type: "array", items: { type: "string" } },
-            interpretation: { type: "array", items: { type: "string" } },
-            signal: { type: "string", enum: ["strong", "moderate", "thin"] },
-            confidence: { type: "number" },
-            sources: { type: "array", items: { type: "integer" } },
+  type: "function" as const,
+  function: {
+    name: "emit_pulses",
+    description:
+      "Emit 0-4 grounded intelligence pulses for the island, each citing corpus item numbers.",
+    parameters: {
+      type: "object" as const,
+      properties: {
+        pulses: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              domain: { type: "string", enum: DOMAIN_VOCAB },
+              headline: { type: "string" },
+              take: { type: "string", description: "What this means, plain English." },
+              whyItMatters: { type: "string" },
+              supportMetricValue: { type: "string" },
+              supportMetricLabel: { type: "string" },
+              supportTrend: { type: "string", enum: ["up", "down", "flat"] },
+              supportQuote: { type: "string" },
+              supportQuoteAttribution: { type: "string" },
+              facts: { type: "array", items: { type: "string" } },
+              interpretation: { type: "array", items: { type: "string" } },
+              signal: { type: "string", enum: ["strong", "moderate", "thin"] },
+              confidence: { type: "number" },
+              sources: { type: "array", items: { type: "integer" } },
+            },
+            required: ["domain", "headline", "take", "facts", "interpretation", "signal", "confidence", "sources"],
           },
-          required: ["domain", "headline", "take", "facts", "interpretation", "signal", "confidence", "sources"],
         },
       },
+      required: ["pulses"],
     },
-    required: ["pulses"],
   },
 };
 
@@ -133,7 +136,7 @@ async function gatherCorpus(islandSlug: string): Promise<CorpusItem[]> {
 export async function generateIslandPulse(islandSlug: string): Promise<number> {
   const client = getClient();
   if (!client) {
-    console.log("  [pulse] ANTHROPIC_API_KEY not set — skipping synthesis.");
+    console.log("  [pulse] DEEPSEEK_API_KEY not set — skipping synthesis.");
     return 0;
   }
   const island = getIsland(islandSlug);
@@ -152,25 +155,22 @@ export async function generateIslandPulse(islandSlug: string): Promise<number> {
     .map((c) => `[${c.n}] (${c.source}) ${c.title}\nURL: ${c.url}\n${c.body}`)
     .join("\n\n");
 
-  const msg = await client.messages.create({
+  const msg = await client.chat.completions.create({
     model: MODEL,
-    max_tokens: 4096, // big corpora (e.g. Tahiti) need room or the tool call truncates
-    system: [
-      { type: "text", text: SYSTEM },
-      // No cache_control: each island's corpus is unique and runs are daily, so a
-      // cache write here would never be read (pure 1.25x waste).
-      { type: "text", text: `ISLAND: ${island.name}\n\nCORPUS:\n${corpusText}` },
+    max_tokens: 4096,
+    messages: [
+      { role: "system", content: SYSTEM + `\n\nISLAND: ${island.name}\n\nCORPUS:\n${corpusText}` },
+      { role: "user", content: `Produce pulses for ${island.name}.` },
     ],
     tools: [TOOL],
-    tool_choice: { type: "tool", name: TOOL.name },
-    messages: [{ role: "user", content: `Produce pulses for ${island.name}.` }],
+    tool_choice: { type: "function", function: { name: TOOL.function.name } },
   });
 
-  if (msg.stop_reason === "max_tokens") {
+  if (msg.choices[0]?.finish_reason === "length") {
     console.log(`  [pulse] ${islandSlug}: WARN response hit max_tokens (corpus ${corpus.length} items).`);
   }
 
-  const out = toolInput<{ pulses: PulseOut[] }>(msg, TOOL.name);
+  const out = toolInput<{ pulses: PulseOut[] }>(msg, TOOL.function.name);
   const pulses = out?.pulses ?? [];
   if (!pulses.length) {
     console.log(`  [pulse] ${islandSlug}: no material pulses.`);

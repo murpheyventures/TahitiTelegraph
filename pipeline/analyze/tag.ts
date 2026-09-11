@@ -1,5 +1,5 @@
 // Tagging pass: classify untagged articles into domains / sub-tags / islands /
-// entities against the fixed vocabulary, using Claude tool-use. Merges with the
+// entities against the fixed vocabulary, using DeepSeek tool-use. Merges with the
 // rule-based island guess already on the row.
 
 import { eq } from "drizzle-orm";
@@ -21,17 +21,20 @@ interface TagOutput {
 }
 
 const TOOL = {
-  name: "tag_item",
-  description: "Assign taxonomy tags to a French Polynesia news item.",
-  input_schema: {
-    type: "object" as const,
-    properties: {
-      domains: { type: "array", items: { type: "string", enum: DOMAIN_VOCAB } },
-      subtags: { type: "array", items: { type: "string", enum: SUBTAG_VOCAB } },
-      islands: { type: "array", items: { type: "string", enum: ISLAND_VOCAB } },
-      entities: { type: "array", items: { type: "string" } },
+  type: "function" as const,
+  function: {
+    name: "tag_item",
+    description: "Assign taxonomy tags to a French Polynesia news item.",
+    parameters: {
+      type: "object" as const,
+      properties: {
+        domains: { type: "array", items: { type: "string", enum: DOMAIN_VOCAB } },
+        subtags: { type: "array", items: { type: "string", enum: SUBTAG_VOCAB } },
+        islands: { type: "array", items: { type: "string", enum: ISLAND_VOCAB } },
+        entities: { type: "array", items: { type: "string" } },
+      },
+      required: ["domains", "subtags", "islands", "entities"],
     },
-    required: ["domains", "subtags", "islands", "entities"],
   },
 };
 
@@ -44,7 +47,7 @@ const SYSTEM =
 export async function tagArticles(limit = 25): Promise<number> {
   const client = getClient();
   if (!client) {
-    console.log("  [tag] ANTHROPIC_API_KEY not set — skipping tagging.");
+    console.log("  [tag] DEEPSEEK_API_KEY not set — skipping tagging.");
     return 0;
   }
 
@@ -56,21 +59,21 @@ export async function tagArticles(limit = 25): Promise<number> {
 
   let tagged = 0;
   for (const a of rows) {
-    const msg = await client.messages.create({
+    const msg = await client.chat.completions.create({
       model: MODEL,
       max_tokens: 400,
-      system: SYSTEM,
-      tools: [TOOL],
-      tool_choice: { type: "tool", name: TOOL.name },
       messages: [
+        { role: "system", content: SYSTEM },
         {
           role: "user",
           content: `TITLE: ${a.title}\n\nBODY (may be French):\n${(a.body ?? "").slice(0, 3000)}`,
         },
       ],
+      tools: [TOOL],
+      tool_choice: { type: "function", function: { name: TOOL.function.name } },
     });
 
-    const out = toolInput<TagOutput>(msg, TOOL.name);
+    const out = toolInput<TagOutput>(msg, TOOL.function.name);
     if (!out) continue;
 
     const islands = Array.from(new Set([...(a.islands ?? []), ...(out.islands ?? [])]));
