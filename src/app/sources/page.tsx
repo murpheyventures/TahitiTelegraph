@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 function fmt(d?: string | null): string {
   if (!d) return "·";
   const dt = new Date(d);
-  return Number.isNaN(dt.getTime()) ? "·" : dt.toLocaleString("en-US");
+  return Number.isNaN(dt.getTime()) ? "·" : dt.toLocaleString("en-US", { timeZone: "America/New_York" });
 }
 
 const STATUS_COLOR: Record<string, string> = {
